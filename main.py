@@ -1,6 +1,6 @@
 from scapy.all import *
 import pickle
-
+import socket
 
 def http_header(packet):
     # incomming https://stackoverflow.com/questions/24664893/python-scapy-sniff-only-incoming-packets
@@ -12,24 +12,33 @@ def http_header(packet):
         data = pickle.load(handle)
         handle.close()
     except:
-        print("file not found")
         data = {"dns": {}, "ip": {}}
     if DNS in packet:
         print(packet[DNS].qd.qname)
         dns = packet[DNS].qd.qname.decode()
-        if dns in data['dns']:
-            data['dns'][dns] += 1
+        if dns in data["dns"]:
+            data["dns"][dns] += 1
         else:
-            data['dns'][dns] = 1
+            data["dns"][dns] = 1
         with open("data.pickle", "wb") as f:
             pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
     elif IP in packet:
-        ip = packet.getlayer(IP).src
-        if ip in data['ip']:
-            data['ip'][ip] += 1
+        ip = packet.getlayer(IP).dst
+        # if packet[IP].dport != 80:
+        #     print("--------------")
+        #     print(f"{ip}:{packet[IP].dport}")
+        #     print(f"{packet[IP].dst}")
+            # print(f"{ip}:{packet[IP].sport}")
+            # try:
+            #     print(socket.gethostbyaddr(packet[IP].dst))
+            # except:
+            #     pass
+        #    print(f"{packet[IP].src}")
+
+        if ip in data["ip"]:
+            data["ip"][ip] += 1
         else:
-            data['ip'][ip] = 1
-        # print(packet.getlayer(IP).src)
+            data["ip"][ip] = 1
         with open("data.pickle", "wb") as f:
             pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
     # http_packet=str(packet)
