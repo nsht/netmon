@@ -1,8 +1,11 @@
 from scapy.all import *
 import pickle
 import socket
+import psutil
 
 def http_header(packet):
+    data = psutil.net_io_counters(pernic=True)
+    print(data['enp3s0'].bytes_recv/1000/1000) 
     # incomming https://stackoverflow.com/questions/24664893/python-scapy-sniff-only-incoming-packets
     if packet[Ether].src != Ether().src:
         # print("nope")
