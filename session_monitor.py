@@ -2,6 +2,7 @@ import datetime
 import signal
 import sys
 import time
+
 import psutil
 
 
@@ -27,7 +28,6 @@ class Monitor:
         diff = data - self.initial_data
         print(ERASE_LINE, end="\r", flush=True)
         print(f"Total data used this session is {diff} mb")
-        print("Exiting...")
         sys.exit(0)
 
     def get_data_used(self):
